@@ -16,21 +16,33 @@ class MyHomePage extends StatelessWidget {
         title: Text(title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            BlocBuilder<InternetBloc, InternetState>(
-              builder: (context, state) {
-                if (state is InternetConnectedState) {
-                  return const Text('Internet Connected');
-                } else if (state is InternetLostState) {
-                  return const Text('Internet Lost');
-                } else {
-                  return const Text('Loading');
-                }
-              },
-            ),
-          ],
+        child: BlocConsumer<InternetBloc, InternetState>(
+          builder: (context, state) {
+            if (state is InternetConnectedState) {
+              return const Text('Internet Connected');
+            } else if (state is InternetLostState) {
+              return const Text('Internet Lost');
+            } else {
+              return const Text('Loading');
+            }
+          },
+          listener: (context, state) {
+            if (state is InternetConnectedState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Internet Connected'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            } else if (state is InternetLostState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Internet Lost'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
         ),
       ),
     );
